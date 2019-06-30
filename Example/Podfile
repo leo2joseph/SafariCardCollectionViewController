@@ -1,11 +1,22 @@
+platform :ios, '10.0'
 use_frameworks!
 
-target 'SafariCardCollectionViewController_Example' do
+inhibit_all_warnings!
+use_frameworks!
+
+def code_quality
+  pod 'SwiftLint'
+end
+
+def main_pods
   pod 'SafariCardCollectionViewController', :path => '../'
+end
 
-  target 'SafariCardCollectionViewController_Tests' do
-    inherit! :search_paths
+target 'SafariCardCollectionViewController_Example' do
+  code_quality
+  main_pods
+end
 
-    
-  end
+target 'SafariCardCollectionViewController_Tests' do
+  inherit! :search_paths
 end

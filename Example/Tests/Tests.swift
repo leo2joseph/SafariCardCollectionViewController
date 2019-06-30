@@ -1,5 +1,4 @@
 import XCTest
-import SafariCardCollectionViewController
 
 class Tests: XCTestCase {
     
