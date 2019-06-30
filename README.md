@@ -10,6 +10,8 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Requirements
 
+- Swift verison 5.0
+
 ## Installation
 
 SafariCardCollectionViewController is available through [CocoaPods](https://cocoapods.org). To install
