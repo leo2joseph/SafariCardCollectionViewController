@@ -15,7 +15,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  SafariCardCollectionViewController: e568bd25acfcf2d6b9afe648783b6bf1a05a3dca
+  SafariCardCollectionViewController: c33eb52cc3f6b8ef425aedd735b2d5ae7a3ffef8
   SwiftLint: fed9c66336e41fc74dc48a73678380718f0c8b0e
 
 PODFILE CHECKSUM: dac587e190ebcbae33c2feb6dcb14386a557e6b6

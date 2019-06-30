@@ -112,23 +112,21 @@ open class SCardCollectionViewController: UICollectionViewController {
         layout.dataSource = self
         self.collectionView?.collectionViewLayout = layout
     }
-}
 
-// MARK: UICollectionViewDataSource
+    // MARK: UICollectionViewDataSource
 
-public extension SCardCollectionViewController {
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+    open override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
     }
 
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    open override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard let dataSource = self.dataSource else {
             return 0
         }
         return dataSource.numberOfCardsInCardCollectionViewController()
     }
 
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    open override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! SCardCollectionViewCell
 
         // Configure the cell
@@ -139,7 +137,7 @@ public extension SCardCollectionViewController {
         return cell
     }
 
-    override func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+    open override func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         dataSource?.cardMoved(from: sourceIndexPath.item, to: destinationIndexPath.item)
     }
 

@@ -22,12 +22,13 @@ A custom UICollectionViewController displays the UICollectionCell layout as Safa
 Support orientation changes.
                        DESC
 
-  s.homepage         = 'https://github.com/hoangson11592@gmail.com/SafariCardCollectionViewController'
+  s.homepage         = 'https://github.com/son11592/SafariCardCollectionViewController'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'hoangson11592@gmail.com' => 'hoangson11592@gmail.com' }
-  s.source           = { :git => 'https://github.com/hoangson11592@gmail.com/SafariCardCollectionViewController.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/son11592/SafariCardCollectionViewController.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+  s.swift_versions = '5.0'
 
   s.ios.deployment_target = '10.0'
 

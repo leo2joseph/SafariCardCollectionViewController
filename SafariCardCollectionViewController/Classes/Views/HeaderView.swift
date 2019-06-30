@@ -8,7 +8,7 @@
 
 import UIKit
 
-public extension SCardCollectionViewCell {
+extension SCardCollectionViewCell {
     public class HeaderView: UIView {
         public let closeButton: UIButton
         public let titleLabel: UILabel
