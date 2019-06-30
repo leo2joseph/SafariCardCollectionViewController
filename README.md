@@ -1,6 +1,5 @@
 # SafariCardCollectionViewController
 
-[![CI Status](https://img.shields.io/travis/hoangson11592@gmail.com/SafariCardCollectionViewController.svg?style=flat)](https://travis-ci.org/hoangson11592@gmail.com/SafariCardCollectionViewController)
 [![Version](https://img.shields.io/cocoapods/v/SafariCardCollectionViewController.svg?style=flat)](https://cocoapods.org/pods/SafariCardCollectionViewController)
 [![License](https://img.shields.io/cocoapods/l/SafariCardCollectionViewController.svg?style=flat)](https://cocoapods.org/pods/SafariCardCollectionViewController)
 [![Platform](https://img.shields.io/cocoapods/p/SafariCardCollectionViewController.svg?style=flat)](https://cocoapods.org/pods/SafariCardCollectionViewController)
