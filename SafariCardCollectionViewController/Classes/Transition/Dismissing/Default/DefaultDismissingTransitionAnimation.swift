@@ -10,7 +10,7 @@ import UIKit
 
 public struct DefaultDismissingTransitionAnimation {
     public init(duration: TimeInterval,
-         transitionContext: UIViewControllerContextTransitioning) {
+                transitionContext: UIViewControllerContextTransitioning) {
         let fromView = transitionContext.view(forKey: .from)!
         let toView = transitionContext.view(forKey: .to)!
         let containerView = transitionContext.containerView
