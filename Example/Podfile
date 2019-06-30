@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'SafariCardCollectionViewController_Example' do
+  pod 'SafariCardCollectionViewController', :path => '../'
+
+  target 'SafariCardCollectionViewController_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
