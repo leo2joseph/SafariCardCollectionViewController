@@ -19,104 +19,101 @@ public class SCardGridCollectionViewLayout: SCardCollectionViewLayout {
         super.prepare()
 
         self.layoutAttributes = [:]
+        self.contentHeight = 0
 
-        guard let collectionView = collectionView else {
-            return
-        }
+        if let collectionView = collectionView {
+            var currentHeight: CGFloat = 0
 
-        var currentHeight: CGFloat = 0
+            // Subtract spacing on left/right
+            let horizontalSpacing = self.minSpacingBetweenItems
+            let verticalSpacing = self.minSpacingBetweenItems
+            let rowUsableWidth = collectionView.bounds.width - horizontalSpacing
+            let maxItemWidth = collectionView.bounds.width * 0.8
 
-        // Subtract spacing on left/right
-        let horizontalSpacing = self.minSpacingBetweenItems
-        let verticalSpacing = self.minSpacingBetweenItems
-        let rowUsableWidth = collectionView.bounds.width - horizontalSpacing
-        let maxItemWidth = collectionView.bounds.width * 0.8
+            for section in 0..<collectionView.numberOfSections {
+                let itemCount = collectionView.numberOfItems(inSection: section)
+                if itemCount == 0 { continue }
+                let numberOfItemsPerRow = min(itemCount, maxItemsPerRow)
+                let numberOfRows = Int(ceil(Double(itemCount) / Double(numberOfItemsPerRow)))
 
-        for section in 0..<collectionView.numberOfSections {
-            let itemCount = collectionView.numberOfItems(inSection: section)
-            if itemCount == 0 { continue }
-            let numberOfItemsPerRow = min(itemCount, maxItemsPerRow)
-            let numberOfRows = Int(ceil(Double(itemCount) / Double(numberOfItemsPerRow)))
+                let itemWidth = min(rowUsableWidth / CGFloat(numberOfItemsPerRow) - horizontalSpacing, maxItemWidth)
+                // Item size should match aspect ratio of collection view's bounds
+                let itemHeight = (collectionView.bounds.height / collectionView.bounds.width) * itemWidth
 
-            let itemWidth = min(rowUsableWidth / CGFloat(numberOfItemsPerRow) - horizontalSpacing, maxItemWidth)
-            // Item size should match aspect ratio of collection view's bounds
-            let itemHeight = (collectionView.bounds.height / collectionView.bounds.width) * itemWidth
+                for item in 0..<itemCount {
+                    let indexPath = IndexPath(item: item, section: section)
+                    let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
 
-            for item in 0..<itemCount {
-                let indexPath = IndexPath(item: item, section: section)
-                let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
+                    let itemOrigin = getItemOrigin(at: indexPath)
+                    let scaleSize = getItemSize(at: indexPath)
+                    let itemSize = collectionView.bounds.size
+                    attributes.frame = CGRect(origin: itemOrigin, size: itemSize)
+                    attributes.transform3D = LayoutUtils.getTransform(
+                        translateToX: 0,
+                        translateToY: 0,
+                        scaleOut: (scaleSize.width / itemSize.width, scaleSize.height / itemSize.height, 1.0),
+                        isRotate: false)
+                    attributes.zIndex = item
 
-                let itemOrigin = getItemOrigin(at: indexPath)
-                let scaleSize = getItemSize(at: indexPath)
-                let itemSize = collectionView.bounds.size
-                attributes.frame = CGRect(origin: itemOrigin, size: itemSize)
-                attributes.transform3D = LayoutUtils.getTransform(
-                    translateToX: 0,
-                    translateToY: 0,
-                    scaleOut: (scaleSize.width / itemSize.width, scaleSize.height / itemSize.height, 1.0),
-                    isRotate: false)
-                attributes.zIndex = item
+                    self.layoutAttributes[indexPath] = attributes
+                }
 
-                self.layoutAttributes[indexPath] = attributes
+                currentHeight += (itemHeight * CGFloat(numberOfRows)) + (verticalSpacing * CGFloat(numberOfRows))
             }
 
-            currentHeight += (itemHeight * CGFloat(numberOfRows)) + (verticalSpacing * CGFloat(numberOfRows))
+            // Add some spacing onto the end for bottom padding
+            self.contentHeight = currentHeight + verticalSpacing
         }
-
-        // Add some spacing onto the end for bottom padding
-        self.contentHeight = currentHeight + verticalSpacing
     }
 
     public override func getItemOrigin(at indexPath: IndexPath) -> CGPoint {
-        guard let collectionView = self.collectionView else {
-            return super.getItemOrigin(at: indexPath)
+        if let collectionView = self.collectionView {
+            let horizontalSpacing = self.minSpacingBetweenItems
+            let verticalSpacing = self.minSpacingBetweenItems
+            let rowUsableWidth = collectionView.bounds.width - horizontalSpacing
+            let maxItemWidth = collectionView.bounds.width * 0.8
+
+            let itemCount = collectionView.numberOfItems(inSection: indexPath.section)
+            let numberOfItemsPerRow = min(itemCount, self.maxItemsPerRow)
+            let itemWidth = min(rowUsableWidth / CGFloat(numberOfItemsPerRow) - horizontalSpacing, maxItemWidth)
+            let itemHeight = (collectionView.bounds.height / collectionView.bounds.width) * itemWidth
+
+            let row = Int(ceil(Double(indexPath.item + 1) / Double(numberOfItemsPerRow))) - 1
+            let positionInRow = indexPath.item % numberOfItemsPerRow
+
+            let scaleSize = getItemSize(at: indexPath)
+            let itemSize = collectionView.bounds.size
+            let xPadding =  -itemSize.width / 2 + scaleSize.width / 2
+            let yPadding =  -itemSize.height / 2 + scaleSize.height / 2
+
+            let xPosition: CGFloat
+            if itemWidth == maxItemWidth {
+                // Case where there is one item in section, and it is the max width, it should be centered horizontally.
+                xPosition = (collectionView.bounds.width - itemWidth) / 2 + xPadding
+            } else {
+                // Otherwise (most cases), it should be positionInRow * itemWidth, plus padding
+                xPosition = horizontalSpacing + (CGFloat(positionInRow) * itemWidth) + (CGFloat(positionInRow) * horizontalSpacing) + xPadding
+            }
+
+            return CGPoint(x: xPosition, y: verticalSpacing + (CGFloat(row) * itemHeight) + (CGFloat(row) * verticalSpacing) + yPadding)
         }
-
-        let horizontalSpacing = self.minSpacingBetweenItems
-        let verticalSpacing = self.minSpacingBetweenItems
-        let rowUsableWidth = collectionView.bounds.width - horizontalSpacing
-        let maxItemWidth = collectionView.bounds.width * 0.8
-
-        let itemCount = collectionView.numberOfItems(inSection: indexPath.section)
-        let numberOfItemsPerRow = min(itemCount, self.maxItemsPerRow)
-        let itemWidth = min(rowUsableWidth / CGFloat(numberOfItemsPerRow) - horizontalSpacing, maxItemWidth)
-        let itemHeight = (collectionView.bounds.height / collectionView.bounds.width) * itemWidth
-
-        let row = Int(ceil(Double(indexPath.item + 1) / Double(numberOfItemsPerRow))) - 1
-        let positionInRow = indexPath.item % numberOfItemsPerRow
-
-        let scaleSize = getItemSize(at: indexPath)
-        let itemSize = collectionView.bounds.size
-        let xPadding =  -itemSize.width / 2 + scaleSize.width / 2
-        let yPadding =  -itemSize.height / 2 + scaleSize.height / 2
-
-        let xPosition: CGFloat
-        if itemWidth == maxItemWidth {
-            // Case where there is one item in section, and it is the max width, it should be centered horizontally.
-            xPosition = (collectionView.bounds.width - itemWidth) / 2 + xPadding
-        } else {
-            // Otherwise (most cases), it should be positionInRow * itemWidth, plus padding
-            xPosition = horizontalSpacing + (CGFloat(positionInRow) * itemWidth) + (CGFloat(positionInRow) * horizontalSpacing) + xPadding
-        }
-
-        return CGPoint(x: xPosition, y: verticalSpacing + (CGFloat(row) * itemHeight) + (CGFloat(row) * verticalSpacing) + yPadding)
+        return super.getItemOrigin(at: indexPath)
     }
 
     public override func getItemSize(at indexPath: IndexPath) -> CGSize {
-        guard let collectionView = self.collectionView else {
-            return super.getItemSize(at: indexPath)
+        if let collectionView = self.collectionView {
+            let horizontalSpacing = self.minSpacingBetweenItems
+            let rowUsableWidth = collectionView.bounds.width - horizontalSpacing
+            let maxItemWidth = collectionView.bounds.width * 0.8
+
+            let itemCount = collectionView.numberOfItems(inSection: indexPath.section)
+            let numberOfItemsPerRow = min(itemCount, self.maxItemsPerRow)
+            let itemWidth = min(rowUsableWidth / CGFloat(numberOfItemsPerRow) - horizontalSpacing, maxItemWidth)
+            let itemHeight = (collectionView.bounds.height / collectionView.bounds.width) * itemWidth
+
+            return CGSize(width: itemWidth, height: itemHeight)
         }
-
-        let horizontalSpacing = self.minSpacingBetweenItems
-        let rowUsableWidth = collectionView.bounds.width - horizontalSpacing
-        let maxItemWidth = collectionView.bounds.width * 0.8
-
-        let itemCount = collectionView.numberOfItems(inSection: indexPath.section)
-        let numberOfItemsPerRow = min(itemCount, self.maxItemsPerRow)
-        let itemWidth = min(rowUsableWidth / CGFloat(numberOfItemsPerRow) - horizontalSpacing, maxItemWidth)
-        let itemHeight = (collectionView.bounds.height / collectionView.bounds.width) * itemWidth
-
-        return CGSize(width: itemWidth, height: itemHeight)
+        return super.getItemSize(at: indexPath)
     }
 
     public override var collectionViewContentSize: CGSize {

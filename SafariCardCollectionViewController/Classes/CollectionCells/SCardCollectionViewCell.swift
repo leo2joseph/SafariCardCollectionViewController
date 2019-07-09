@@ -19,7 +19,7 @@ public class SCardCollectionViewCell: UICollectionViewCell {
 
     public var title: String? {
         didSet {
-            headerView.titleLabel.text = title
+            self.headerView.titleLabel.text = title
         }
     }
     public var snapshot: UIImage? {
@@ -76,10 +76,8 @@ public class SCardCollectionViewCell: UICollectionViewCell {
             ])
     }
 
-    required public init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
-
-    public override func layoutSubviews() {
-        super.layoutSubviews()
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     public func setHeaderAlpha(_ value: CGFloat) {
@@ -88,10 +86,6 @@ public class SCardCollectionViewCell: UICollectionViewCell {
 
     public func headerAlpha() -> CGFloat {
         return self.headerView.alpha
-    }
-
-    public override func prepareForReuse() {
-        super.prepareForReuse()
     }
 
     @objc private func closeTapped() {

@@ -41,7 +41,7 @@ public struct TilePresentingTransitionAnimation {
         let finalTransforms = visibleCells.map({ cell -> CATransform3D in
             let cellIndexPaths = collectionView.indexPath(for: cell)!
             if cellIndexPaths.row < activatedTabIndex {
-                return LayoutUtils.getTransform(translateToX: 0, translateToY: -collectionView.bounds.height, scaleOut: (1.0, 1.0, 1.0), isRotate: false)
+                return LayoutUtils.getTransform(translateToX: 0, translateToY: -collectionView.bounds.height * 1.5, scaleOut: (1.0, 1.0, 1.0), isRotate: false)
             } else if cellIndexPaths.row == activatedTabIndex {
                 return LayoutUtils.getTransform(translateToX: 0, translateToY: finalTranslateToY, scaleOut: (1.0, 1.0, 1.0), isRotate: false)
             } else {

@@ -41,52 +41,54 @@ public class SCardTileCollectionViewLayout: SCardCollectionViewLayout {
         self.layoutAttributes = [:]
         self.contentHeight = 0
 
-        guard let collectionView = self.collectionView
-            else { return }
+        if let collectionView = self.collectionView {
 
-        let itemDistance =  collectionView.bounds.height / self.separatorDevisor
+            let itemDistance =  collectionView.bounds.height / self.separatorDevisor
 
-        for section in 0..<collectionView.numberOfSections {
-            let itemCount = collectionView.numberOfItems(inSection: section)
-            if itemCount == 0 { continue }
+            for section in 0..<collectionView.numberOfSections {
+                let itemCount = collectionView.numberOfItems(inSection: section)
+                if itemCount == 0 { continue }
 
-            for item in 0..<itemCount {
-                let indexPath = IndexPath(item: item, section: section)
-                let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
+                for item in 0..<itemCount {
+                    let indexPath = IndexPath(item: item, section: section)
+                    let attributes = UICollectionViewLayoutAttributes(forCellWith: indexPath)
 
-                let origin = self.getItemOrigin(at: indexPath)
-                let size = self.getItemSize(at: indexPath)
-                attributes.frame = CGRect(origin: origin, size: size)
-                attributes.transform3D = LayoutUtils.getTransform(translateToX: 0, translateToY: 0, scaleOut: (0.8, 0.8, 0.8), isRotate: true)
-                attributes.zIndex = item
+                    let origin = self.getItemOrigin(at: indexPath)
+                    let size = self.getItemSize(at: indexPath)
+                    attributes.frame = CGRect(origin: origin, size: size)
+                    attributes.transform3D = LayoutUtils.getTransform(translateToX: 0, translateToY: 0, scaleOut: (0.8, 0.8, 0.8), isRotate: true)
+                    attributes.zIndex = item
 
-                self.layoutAttributes[indexPath] = attributes
+                    self.layoutAttributes[indexPath] = attributes
+                    self.contentHeight += itemDistance
+                }
+
+                // Extra height
                 self.contentHeight += itemDistance
             }
-
-            // Extra height
-            self.contentHeight += itemDistance
         }
     }
 
     public override func getItemOrigin(at indexPath: IndexPath) -> CGPoint {
-        guard let collectionView = self.collectionView
-            else { return super.getItemOrigin(at: indexPath) }
-
-        let itemDistance = collectionView.bounds.height / separatorDevisor
-        return .init(x: 0, y: CGFloat(indexPath.item) * itemDistance)
+        if let collectionView = self.collectionView {
+            let itemDistance = collectionView.bounds.height / separatorDevisor
+            return .init(x: 0, y: CGFloat(indexPath.item) * itemDistance)
+        }
+        return super.getItemOrigin(at: indexPath)
     }
 
     public override func getItemSize(at indexPath: IndexPath) -> CGSize {
-        guard let collectionView = self.collectionView
-            else { return super.getItemSize(at: indexPath) }
-        return collectionView.bounds.size
+        if let collectionView = self.collectionView {
+            return collectionView.bounds.size
+        }
+        return super.getItemSize(at: indexPath)
     }
 
     public override var collectionViewContentSize: CGSize {
-        guard let collectionView = self.collectionView
-            else { return .zero }
-        return CGSize(width: collectionView.frame.size.width, height: self.contentHeight)
+        if let collectionView = self.collectionView {
+            return CGSize(width: collectionView.frame.size.width, height: self.contentHeight)
+        }
+        return .zero
     }
 
     public override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
@@ -98,21 +100,23 @@ public class SCardTileCollectionViewLayout: SCardCollectionViewLayout {
     }
 
     public override func initialLayoutAttributesForAppearingItem(at itemIndexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
-        guard let attributes = super.initialLayoutAttributesForAppearingItem(at: itemIndexPath)
-            else { return nil }
-        if self.addingIndexPath == itemIndexPath {
-            attributes.transform3D = CATransform3DScale(CATransform3DTranslate(attributes.transform3D, 0, attributes.bounds.height, 0), 0.8, 0.8, 0.8)
+        if let attributes = super.initialLayoutAttributesForAppearingItem(at: itemIndexPath) {
+            if self.addingIndexPath == itemIndexPath {
+                attributes.transform3D = CATransform3DScale(CATransform3DTranslate(attributes.transform3D, 0, attributes.bounds.height, 0), 0.8, 0.8, 0.8)
+            }
+            return attributes
         }
-        return attributes
+        return nil
     }
 
     public override func finalLayoutAttributesForDisappearingItem(at itemIndexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
-        guard let attributes = super.finalLayoutAttributesForDisappearingItem(at: itemIndexPath)
-            else { return nil }
-        if self.removingIndexPath == itemIndexPath {
-            attributes.transform3D = CATransform3DTranslate(attributes.transform3D, -attributes.bounds.width, 0, 0)
+        if let attributes = super.finalLayoutAttributesForDisappearingItem(at: itemIndexPath) {
+            if self.removingIndexPath == itemIndexPath {
+                attributes.transform3D = CATransform3DTranslate(attributes.transform3D, -attributes.bounds.width, 0, 0)
+            }
+            return attributes
         }
-        return attributes
+        return nil
     }
 
     public override func layoutAttributesForInteractivelyMovingItem(at indexPath: IndexPath, withTargetPosition position: CGPoint) -> UICollectionViewLayoutAttributes {

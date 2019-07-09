@@ -120,10 +120,10 @@ open class SCardCollectionViewController: UICollectionViewController {
     }
 
     open override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let dataSource = self.dataSource else {
-            return 0
+        if let dataSource = self.dataSource {
+            return dataSource.numberOfCardsInCardCollectionViewController()
         }
-        return dataSource.numberOfCardsInCardCollectionViewController()
+        return 0
     }
 
     open override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -150,8 +150,8 @@ open class SCardCollectionViewController: UICollectionViewController {
 
 extension SCardCollectionViewController: SCardCollectionViewCellDelegate {
     public func cardCollectionViewCellCloseButtonTapped(_ cell: SCardCollectionViewCell) {
-        guard let indexPath = self.collectionView?.indexPath(for: cell)
-            else { return }
-        removeCard(at: indexPath.item)
+        if let indexPath = self.collectionView?.indexPath(for: cell) {
+            self.removeCard(at: indexPath.item)
+        }
     }
 }
